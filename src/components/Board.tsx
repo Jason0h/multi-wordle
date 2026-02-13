@@ -1,12 +1,15 @@
 import { RefObject } from "react";
 import Row from "./Row";
+import { TileStatus } from "@/types";
 
 export default function Board({
   board,
+  feedback,
   currentRow,
   currentRowRef,
 }: {
   board: string[][];
+  feedback: TileStatus[][];
   currentRow: number;
   currentRowRef: RefObject<HTMLDivElement | null>;
 }) {
@@ -17,6 +20,7 @@ export default function Board({
           key={index}
           ref={index === currentRow ? currentRowRef : undefined}
           letters={row}
+          feedback={feedback[index]}
         />
       ))}
     </div>

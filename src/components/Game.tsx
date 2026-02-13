@@ -6,10 +6,16 @@ import { useAnimate } from "motion/react";
 import Board from "./Board";
 import { trpc } from "@/lib/trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
+import { TileStatus } from "@/types";
 
 const emptyBoard = () =>
   Array.from({ length: MAX_GUESSES }, () =>
     Array<string>(WORD_LENGTH).fill(""),
+  );
+
+const emptyFeedback = (): TileStatus[][] =>
+  Array.from({ length: MAX_GUESSES }, () =>
+    Array<TileStatus>(WORD_LENGTH).fill("idle"),
   );
 
 export default function Game({
@@ -24,11 +30,23 @@ export default function Game({
     return idx === -1 ? MAX_GUESSES : idx;
   });
 
+  const [feedback, setFeedback] = useImmer(emptyFeedback);
   const [currentRowScope, animateRow] = useAnimate();
 
   const submitGuess = trpc.game.submitGuess.useMutation({
     onSuccess(data) {
       setBoard(data.board);
+      // Hardcoded fake feedback for testing the flip animation
+      const fakeFeedback: TileStatus[] = [
+        "correct",
+        "present",
+        "absent",
+        "absent",
+        "correct",
+      ];
+      setFeedback((draft) => {
+        draft[currentRow] = fakeFeedback;
+      });
       setCurrentRow((prev) => prev + 1);
     },
   });
@@ -71,5 +89,12 @@ export default function Game({
     return () => window.removeEventListener("keydown", handleKeyDown);
   });
 
-  return <Board board={board} currentRow={currentRow} currentRowRef={currentRowScope} />;
+  return (
+    <Board
+      board={board}
+      feedback={feedback}
+      currentRow={currentRow}
+      currentRowRef={currentRowScope}
+    />
+  );
 }
