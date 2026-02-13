@@ -4,8 +4,8 @@ import { TileStatus } from "@/types";
 
 const TILE_COLORS: Record<Exclude<TileStatus, "idle">, string> = {
   correct: "bg-primary text-primary-foreground border-primary",
-  present: "bg-chart-2 text-white border-chart-2",
-  absent: "bg-muted-foreground text-white border-muted-foreground",
+  present: "bg-chart-2 text-foreground border-chart-2",
+  absent: "bg-muted-foreground text-foreground border-muted-foreground",
 };
 
 export default function Tile({
