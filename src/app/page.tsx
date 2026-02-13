@@ -11,7 +11,10 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <Game initialBoard={session.board ?? null} />
+      <Game
+        initialBoard={session.board ?? null}
+        initialFeedback={session.feedback ?? null}
+      />
     </div>
   );
 }

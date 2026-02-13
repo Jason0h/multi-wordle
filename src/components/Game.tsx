@@ -20,8 +20,10 @@ const emptyFeedback = (): TileStatus[][] =>
 
 export default function Game({
   initialBoard,
+  initialFeedback,
 }: {
   initialBoard: string[][] | null;
+  initialFeedback: TileStatus[][] | null;
 }) {
   const [board, setBoard] = useImmer(initialBoard ?? emptyBoard);
   const [currentRow, setCurrentRow] = useState(() => {
@@ -30,23 +32,13 @@ export default function Game({
     return idx === -1 ? MAX_GUESSES : idx;
   });
 
-  const [feedback, setFeedback] = useImmer(emptyFeedback);
+  const [feedback, setFeedback] = useImmer(initialFeedback ?? emptyFeedback);
   const [currentRowScope, animateRow] = useAnimate();
 
   const submitGuess = trpc.game.submitGuess.useMutation({
     onSuccess(data) {
       setBoard(data.board);
-      // Hardcoded fake feedback for testing the flip animation
-      const fakeFeedback: TileStatus[] = [
-        "correct",
-        "present",
-        "absent",
-        "absent",
-        "correct",
-      ];
-      setFeedback((draft) => {
-        draft[currentRow] = fakeFeedback;
-      });
+      setFeedback(data.feedback);
       setCurrentRow((prev) => prev + 1);
     },
   });

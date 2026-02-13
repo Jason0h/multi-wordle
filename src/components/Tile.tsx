@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useAnimate } from "motion/react";
 import { TileStatus } from "@/types";
 
@@ -19,9 +19,12 @@ export default function Tile({
 }) {
   const [scope, animate] = useAnimate();
   const [revealed, setRevealed] = useState(status !== "idle");
+  const prevStatus = useRef(status);
 
   useEffect(() => {
-    if (status === "idle") return;
+    // Skip animation if tile was already revealed on mount
+    if (status === "idle" || prevStatus.current === status) return;
+    prevStatus.current = status;
 
     let cancelled = false;
     const run = async () => {

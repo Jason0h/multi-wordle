@@ -1,7 +1,9 @@
 import { SessionOptions } from "iron-session";
+import { TileStatus } from "@/types";
 
 export interface GameSession {
   board: string[][];
+  feedback: TileStatus[][];
 }
 
 export const sessionOptions: SessionOptions = {
