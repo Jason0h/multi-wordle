@@ -12,9 +12,27 @@ const emptyBoard = () =>
     Array<string>(WORD_LENGTH).fill(""),
   );
 
-export default function Game() {
-  const [board, setBoard] = useImmer(emptyBoard);
-  const [currentRow, setCurrentRow] = useState(0);
+async function submitGuess(guess: string[]): Promise<string[][]> {
+  const res = await fetch("/api/guess", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ guess }),
+  });
+  const data = (await res.json()) as { board: string[][] };
+  return data.board;
+}
+
+export default function Game({
+  initialBoard,
+}: {
+  initialBoard: string[][] | null;
+}) {
+  const [board, setBoard] = useImmer(initialBoard ?? emptyBoard);
+  const [currentRow, setCurrentRow] = useState(() => {
+    if (!initialBoard) return 0;
+    const idx = initialBoard.findIndex((row) => row.some((l) => l === ""));
+    return idx === -1 ? MAX_GUESSES : idx;
+  });
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -40,11 +58,14 @@ export default function Game() {
       } else if (key === "Enter") {
         const row = board[currentRow];
         if (row.every((l) => l !== "")) {
-          setCurrentRow((prev) => prev + 1);
+          void submitGuess(row).then((newBoard) => {
+            setBoard(newBoard);
+            setCurrentRow((prev) => prev + 1);
+          });
         }
       }
     },
-    [board, currentRow, setBoard],
+    [board, currentRow, setBoard, setCurrentRow],
   );
 
   useEffect(() => {
