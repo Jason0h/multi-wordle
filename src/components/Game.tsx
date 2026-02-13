@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
+import { useAnimate } from "motion/react";
 import Board from "./Board";
 import { trpc } from "@/lib/trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
@@ -23,6 +24,8 @@ export default function Game({
     return idx === -1 ? MAX_GUESSES : idx;
   });
 
+  const [currentRowScope, animateRow] = useAnimate();
+
   const submitGuess = trpc.game.submitGuess.useMutation({
     onSuccess(data) {
       setBoard(data.board);
@@ -30,8 +33,8 @@ export default function Game({
     },
   });
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (currentRow >= MAX_GUESSES) return;
 
       const key = e.key;
@@ -55,16 +58,18 @@ export default function Game({
         const row = board[currentRow];
         if (row.every((l) => l !== "")) {
           submitGuess.mutate({ guess: row });
+        } else {
+          animateRow(currentRowScope.current, {
+            x: [0, -4, 4, -4, 4, 0],
+            transition: { duration: 0.3 },
+          });
         }
       }
-    },
-    [board, currentRow, setBoard, submitGuess],
-  );
+    };
 
-  useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
+  });
 
-  return <Board board={board} />;
+  return <Board board={board} currentRow={currentRow} currentRowRef={currentRowScope} />;
 }
