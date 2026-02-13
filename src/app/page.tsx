@@ -1,7 +1,18 @@
+import Board from "@/components/Board";
+
+const board = [
+  ["H", "E", "L", "L", "O"],
+  ["", "", "", "", ""],
+  ["", "", "", "", ""],
+  ["", "", "", "", ""],
+  ["", "", "", "", ""],
+  ["", "", "", "", ""],
+];
+
 export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <h1 className="text-4xl font-bold">Multi Wordle</h1>
+      <Board board={board} />
     </div>
   );
 }
