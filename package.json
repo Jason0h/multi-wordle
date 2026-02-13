@@ -19,6 +19,7 @@
     "immer": "^11.1.4",
     "iron-session": "^8.0.4",
     "lucide-react": "^0.563.0",
+    "motion": "^12.34.0",
     "next": "16.1.6",
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
