@@ -3,24 +3,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { useImmer } from "use-immer";
 import Board from "./Board";
-
-const WORD_LENGTH = 5;
-const MAX_GUESSES = 6;
+import { trpc } from "@/lib/trpc";
+import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 
 const emptyBoard = () =>
   Array.from({ length: MAX_GUESSES }, () =>
     Array<string>(WORD_LENGTH).fill(""),
   );
-
-async function submitGuess(guess: string[]): Promise<string[][]> {
-  const res = await fetch("/api/guess", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ guess }),
-  });
-  const data = (await res.json()) as { board: string[][] };
-  return data.board;
-}
 
 export default function Game({
   initialBoard,
@@ -32,6 +21,13 @@ export default function Game({
     if (!initialBoard) return 0;
     const idx = initialBoard.findIndex((row) => row.some((l) => l === ""));
     return idx === -1 ? MAX_GUESSES : idx;
+  });
+
+  const submitGuess = trpc.game.submitGuess.useMutation({
+    onSuccess(data) {
+      setBoard(data.board);
+      setCurrentRow((prev) => prev + 1);
+    },
   });
 
   const handleKeyDown = useCallback(
@@ -58,14 +54,11 @@ export default function Game({
       } else if (key === "Enter") {
         const row = board[currentRow];
         if (row.every((l) => l !== "")) {
-          void submitGuess(row).then((newBoard) => {
-            setBoard(newBoard);
-            setCurrentRow((prev) => prev + 1);
-          });
+          submitGuess.mutate({ guess: row });
         }
       }
     },
-    [board, currentRow, setBoard, setCurrentRow],
+    [board, currentRow, setBoard, submitGuess],
   );
 
   useEffect(() => {
