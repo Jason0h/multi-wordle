@@ -3,9 +3,9 @@ import { motion, useAnimate } from "motion/react";
 import { TileStatus } from "@/types";
 
 const TILE_COLORS: Record<Exclude<TileStatus, "idle">, string> = {
-  correct: "bg-primary text-primary-foreground border-primary",
-  present: "bg-chart-2 text-foreground border-chart-2",
-  absent: "bg-muted-foreground text-foreground border-muted-foreground",
+  correct: "bg-primary text-white dark:text-black border-primary",
+  present: "bg-chart-2 text-white dark:text-black border-chart-2",
+  absent: "bg-muted-foreground text-white dark:text-black border-muted-foreground",
 };
 
 export default function Tile({
