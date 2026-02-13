@@ -1,18 +1,9 @@
-import Board from "@/components/Board";
-
-const board = [
-  ["H", "E", "L", "L", "O"],
-  ["", "", "", "", ""],
-  ["", "", "", "", ""],
-  ["", "", "", "", ""],
-  ["", "", "", "", ""],
-  ["", "", "", "", ""],
-];
+import Game from "@/components/Game";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <Board board={board} />
+      <Game />
     </div>
   );
 }
