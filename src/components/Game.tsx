@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
 import { useAnimate } from "motion/react";
 import Board from "./Board";
+import Keyboard from "./Keyboard";
 import { trpc } from "@/lib/trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 import { TileStatus } from "@/types";
@@ -82,11 +83,14 @@ export default function Game({
   });
 
   return (
-    <Board
-      board={board}
-      feedback={feedback}
-      currentRow={currentRow}
-      currentRowRef={currentRowScope}
-    />
+    <div className="flex flex-col items-center gap-6">
+      <Board
+        board={board}
+        feedback={feedback}
+        currentRow={currentRow}
+        currentRowRef={currentRowScope}
+      />
+      <Keyboard />
+    </div>
   );
 }
