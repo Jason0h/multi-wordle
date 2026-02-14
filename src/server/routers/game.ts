@@ -2,6 +2,7 @@ import { z } from "zod/v4";
 import { router, publicProcedure } from "../trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 import { TileStatus } from "@/types";
+import { getRandomWord } from "@/lib/words";
 
 const emptyFeedback = (): TileStatus[][] =>
   Array.from({ length: MAX_GUESSES }, () =>
@@ -23,6 +24,7 @@ export const gameRouter = router({
   submitGuess: publicProcedure
     .input(z.object({ guess: z.array(z.string()).length(WORD_LENGTH) }))
     .mutation(async ({ ctx, input }) => {
+      const secret: string[] = ctx.session.secret ?? getRandomWord();
       const board: string[][] =
         ctx.session.board ??
         Array.from({ length: MAX_GUESSES }, () =>
@@ -46,8 +48,19 @@ export const gameRouter = router({
         "correct",
       ];
 
+      feedback[currentRow] = input.guess.map((guessLetter, idx) => {
+        if (guessLetter === secret[idx]) {
+          return "correct";
+        } else if (secret.includes(guessLetter)) {
+          return "present";
+        } else {
+          return "absent";
+        }
+      })
+
       ctx.session.board = board;
       ctx.session.feedback = feedback;
+      ctx.session.secret = secret;
       await ctx.session.save();
 
       return { board, feedback };
