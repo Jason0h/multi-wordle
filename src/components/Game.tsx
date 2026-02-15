@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import Header from "./Header";
 import Board from "./Board";
 import Keyboard from "./Keyboard";
+import HelpDialog from "./HelpDialog";
 import {
   Dialog,
   DialogContent,
@@ -48,6 +49,7 @@ export default function Game({
   );
   const [gameId, setGameId] = useState(0);
   const [showWinDialog, setShowWinDialog] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [currentRowScope, animateRow] = useAnimate();
 
   const gameOver =
@@ -138,7 +140,7 @@ export default function Game({
 
   return (
     <div className="flex w-full max-w-lg flex-col items-center gap-6">
-      <Header onNewGame={() => newGame.mutate()} />
+      <Header onNewGame={() => newGame.mutate()} onHelp={() => setShowHelp(true)} />
       <Board
         key={gameId}
         board={board}
@@ -147,6 +149,7 @@ export default function Game({
         currentRowRef={currentRowScope}
       />
       <Keyboard board={board} feedback={keyboardFeedback} />
+      <HelpDialog open={showHelp} onOpenChange={setShowHelp} />
       <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
         <DialogContent>
           <DialogHeader>

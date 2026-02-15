@@ -3,13 +3,20 @@
 import { CircleHelp, RotateCcw } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 
-export default function Header({ onNewGame }: { onNewGame: () => void }) {
+export default function Header({
+  onNewGame,
+  onHelp,
+}: {
+  onNewGame: () => void;
+  onHelp: () => void;
+}) {
   return (
     <div className="flex w-full items-center justify-between">
       <h1 className="text-xl font-bold tracking-wide">MULTI WORDLE</h1>
       <div className="flex items-center gap-2">
         <button
           onClick={(e) => {
+            onHelp();
             e.currentTarget.blur();
           }}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-border outline-none transition-colors hover:bg-accent"
