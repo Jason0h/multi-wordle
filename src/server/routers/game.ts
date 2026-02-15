@@ -39,24 +39,22 @@ export const gameRouter = router({
 
       board[currentRow] = input.guess;
 
-      // Hardcoded fake feedback for now
-      feedback[currentRow] = [
-        "correct",
-        "present",
-        "absent",
-        "absent",
-        "correct",
-      ];
-
-      feedback[currentRow] = input.guess.map((guessLetter, idx) => {
-        if (guessLetter === secret[idx]) {
-          return "correct";
-        } else if (secret.includes(guessLetter)) {
-          return "present";
-        } else {
-          return "absent";
+      const secretBank = [...secret];
+      for (let i = 0; i < board[currentRow].length; i++) {
+        if (board[currentRow][i] === secret[i]) {
+          secretBank[i] = "";
+          feedback[currentRow][i] = "correct";
         }
-      })
+      }
+      for (let i = 0; i < board[currentRow].length; i++) {
+        if (feedback[currentRow][i] === "correct") continue;
+        if (secretBank.includes(board[currentRow][i])) {
+          feedback[currentRow][i] = "present";
+          secretBank[secretBank.indexOf(board[currentRow][i])] = "";
+        } else {
+          feedback[currentRow][i] = "absent";
+        }
+      }
 
       ctx.session.board = board;
       ctx.session.feedback = feedback;
