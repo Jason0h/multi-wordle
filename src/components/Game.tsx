@@ -35,6 +35,9 @@ export default function Game({
   });
 
   const [feedback, setFeedback] = useImmer(initialFeedback ?? emptyFeedback);
+  const [keyboardFeedback, setKeyboardFeedback] = useImmer(
+    initialFeedback ?? emptyFeedback,
+  );
   const [gameId, setGameId] = useState(0);
   const [currentRowScope, animateRow] = useAnimate();
 
@@ -43,10 +46,13 @@ export default function Game({
     (currentRow >= MAX_GUESSES ||
       feedback[currentRow - 1].every((s) => s === "correct"));
 
+  const FLIP_DURATION = (WORD_LENGTH - 1) * 200 + 300 + 200; // Time for all tiles to flip plus a little buffer
+
   const newGame = trpc.game.newGame.useMutation({
     onSuccess(data) {
       setBoard(data.board);
       setFeedback(data.feedback);
+      setKeyboardFeedback(data.feedback);
       setCurrentRow(0);
       setGameId((prev) => prev + 1);
     },
@@ -57,6 +63,9 @@ export default function Game({
       setBoard(data.board);
       setFeedback(data.feedback);
       setCurrentRow((prev) => prev + 1);
+      setTimeout(() => {
+        setKeyboardFeedback(data.feedback);
+      }, FLIP_DURATION);
     },
   });
 
@@ -108,7 +117,7 @@ export default function Game({
         currentRow={currentRow}
         currentRowRef={currentRowScope}
       />
-      <Keyboard board={board} feedback={feedback} />
+      <Keyboard board={board} feedback={keyboardFeedback} />
     </div>
   );
 }
