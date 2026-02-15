@@ -49,6 +49,8 @@ export default function Game({
   );
   const [gameId, setGameId] = useState(0);
   const [showWinDialog, setShowWinDialog] = useState(false);
+  const [showLossDialog, setShowLossDialog] = useState(false);
+  const [lostSecret, setLostSecret] = useState("");
   const [showHelp, setShowHelp] = useState(false);
   const [currentRowScope, animateRow] = useAnimate();
 
@@ -67,6 +69,7 @@ export default function Game({
       setCurrentRow(0);
       setGameId((prev) => prev + 1);
       setShowWinDialog(false);
+      setShowLossDialog(false);
     },
   });
 
@@ -88,6 +91,11 @@ export default function Game({
         setTimeout(() => {
           setShowWinDialog(true);
         }, FLIP_DURATION + BOUNCE_DURATION);
+      } else if (data.secret) {
+        setTimeout(() => {
+          setLostSecret(data.secret!);
+          setShowLossDialog(true);
+        }, FLIP_DURATION);
       }
     },
     onError() {
@@ -157,6 +165,16 @@ export default function Game({
             <DialogDescription>
               You guessed the word in {currentRow}{" "}
               {currentRow === 1 ? "guess" : "guesses"}.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={showLossDialog} onOpenChange={setShowLossDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Better luck next time 😢</DialogTitle>
+            <DialogDescription>
+              The word was <span className="font-bold text-foreground">{lostSecret}</span>.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

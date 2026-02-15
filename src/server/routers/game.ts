@@ -70,6 +70,10 @@ export const gameRouter = router({
       ctx.session.secret = secret;
       await ctx.session.save();
 
-      return { board, feedback };
+      const isLoss =
+        currentRow === MAX_GUESSES - 1 &&
+        !feedback[currentRow].every((s) => s === "correct");
+
+      return { board, feedback, ...(isLoss ? { secret: secret.join("") } : {}) };
     }),
 });
