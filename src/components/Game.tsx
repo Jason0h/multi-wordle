@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
 import { useAnimate } from "motion/react";
+import Header from "./Header";
 import Board from "./Board";
 import Keyboard from "./Keyboard";
 import { trpc } from "@/lib/trpc";
@@ -34,7 +35,17 @@ export default function Game({
   });
 
   const [feedback, setFeedback] = useImmer(initialFeedback ?? emptyFeedback);
+  const [gameId, setGameId] = useState(0);
   const [currentRowScope, animateRow] = useAnimate();
+
+  const newGame = trpc.game.newGame.useMutation({
+    onSuccess(data) {
+      setBoard(data.board);
+      setFeedback(data.feedback);
+      setCurrentRow(0);
+      setGameId((prev) => prev + 1);
+    },
+  });
 
   const submitGuess = trpc.game.submitGuess.useMutation({
     onSuccess(data) {
@@ -84,7 +95,9 @@ export default function Game({
 
   return (
     <div className="flex flex-col items-center gap-6">
+      <Header onNewGame={() => newGame.mutate()} />
       <Board
+        key={gameId}
         board={board}
         feedback={feedback}
         currentRow={currentRow}
