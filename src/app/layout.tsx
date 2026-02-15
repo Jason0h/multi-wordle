@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GTProvider } from "gt-next";
 import { ThemeProvider } from "next-themes";
 import TRPCProvider from "@/components/TRPCProvider";
 import { Toaster } from "@/components/ui/sonner";
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TRPCProvider>{children}</TRPCProvider>
-          <Toaster position="top-center" />
-        </ThemeProvider>
+        <GTProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <TRPCProvider>{children}</TRPCProvider>
+            <Toaster position="top-center" />
+          </ThemeProvider>
+        </GTProvider>
       </body>
     </html>
   );
