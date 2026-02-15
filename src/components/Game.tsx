@@ -153,7 +153,7 @@ export default function Game({
       <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>You won!</DialogTitle>
+            <DialogTitle>You won! 🎉</DialogTitle>
             <DialogDescription>
               You guessed the word in {currentRow}{" "}
               {currentRow === 1 ? "guess" : "guesses"}.
