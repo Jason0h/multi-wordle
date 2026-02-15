@@ -1,11 +1,14 @@
-const DICTIONARY = new Set(["APPLE", "CREAM", "HAPPY", "MAPLE"]);
+import answers from "../../data/en-answers.json";
+import valid from "../../data/en-valid.json";
+
+const ANSWERS = answers.map((w) => w.toUpperCase());
+const VALID = new Set(valid.map((w) => w.toUpperCase()));
 
 export function getRandomWord(): string[] {
-  const words = [...DICTIONARY];
-  const word = words[Math.floor(Math.random() * words.length)];
+  const word = ANSWERS[Math.floor(Math.random() * ANSWERS.length)];
   return word.split("");
 }
 
 export function isValidWord(guess: string[]): boolean {
-  return DICTIONARY.has(guess.join(""));
+  return VALID.has(guess.join(""));
 }
