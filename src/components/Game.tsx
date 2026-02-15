@@ -38,6 +38,11 @@ export default function Game({
   const [gameId, setGameId] = useState(0);
   const [currentRowScope, animateRow] = useAnimate();
 
+  const gameOver =
+    currentRow > 0 &&
+    (currentRow >= MAX_GUESSES ||
+      feedback[currentRow - 1].every((s) => s === "correct"));
+
   const newGame = trpc.game.newGame.useMutation({
     onSuccess(data) {
       setBoard(data.board);
@@ -57,7 +62,7 @@ export default function Game({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (currentRow >= MAX_GUESSES) return;
+      if (gameOver) return;
 
       const key = e.key;
 
