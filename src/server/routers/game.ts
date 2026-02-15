@@ -1,8 +1,9 @@
 import { z } from "zod/v4";
+import { TRPCError } from "@trpc/server";
 import { router, publicProcedure } from "../trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 import { TileStatus } from "@/types";
-import { getRandomWord } from "@/lib/words";
+import { getRandomWord, isValidWord } from "@/lib/words";
 
 const emptyFeedback = (): TileStatus[][] =>
   Array.from({ length: MAX_GUESSES }, () =>
@@ -17,6 +18,7 @@ export const gameRouter = router({
     const feedback = emptyFeedback();
     ctx.session.board = board;
     ctx.session.feedback = feedback;
+    ctx.session.secret = undefined;
     await ctx.session.save();
     return { board, feedback };
   }),
@@ -35,6 +37,13 @@ export const gameRouter = router({
       const currentRow = board.findIndex((row) => row.every((l) => l === ""));
       if (currentRow === -1) {
         throw new Error("No guesses remaining");
+      }
+
+      if (!isValidWord(input.guess)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Not in word list",
+        });
       }
 
       board[currentRow] = input.guess;

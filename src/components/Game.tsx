@@ -67,6 +67,12 @@ export default function Game({
         setKeyboardFeedback(data.feedback);
       }, FLIP_DURATION);
     },
+    onError() {
+      animateRow(currentRowScope.current, {
+        x: [0, -4, 4, -4, 4, 0],
+        transition: { duration: 0.3 },
+      });
+    },
   });
 
   useEffect(() => {
@@ -108,7 +114,7 @@ export default function Game({
   });
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex w-full max-w-lg flex-col items-center gap-6">
       <Header onNewGame={() => newGame.mutate()} />
       <Board
         key={gameId}
