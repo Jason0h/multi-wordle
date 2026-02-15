@@ -103,7 +103,7 @@ export default function Game({
         currentRow={currentRow}
         currentRowRef={currentRowScope}
       />
-      <Keyboard />
+      <Keyboard board={board} feedback={feedback} />
     </div>
   );
 }
