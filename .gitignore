@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# word list raw frequency files (large, download via README instructions)
+/data/raw/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
