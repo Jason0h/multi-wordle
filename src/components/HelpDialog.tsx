@@ -1,5 +1,6 @@
 "use client";
 
+import { T, useGT } from "gt-next";
 import {
   Dialog,
   DialogContent,
@@ -46,39 +47,51 @@ export default function HelpDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const t = useGT();
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>How To Play</DialogTitle>
+          <DialogTitle>
+            <T>How To Play</T>
+          </DialogTitle>
         </DialogHeader>
-        <p className="font-medium">Guess the Wordle in 6 tries.</p>
+        <p className="font-medium">
+          <T>Guess the Wordle in 6 tries.</T>
+        </p>
         <ul className="list-disc space-y-1 pl-5 text-sm">
-          <li>Each guess must be a valid 5-letter word.</li>
           <li>
-            The color of the tiles will change to show how close your guess was
-            to the word.
+            <T>Each guess must be a valid 5-letter word.</T>
+          </li>
+          <li>
+            <T>
+              The color of the tiles will change to show how close your guess
+              was to the word.
+            </T>
           </li>
         </ul>
         <div className="space-y-3">
-          <p className="text-sm font-semibold">Examples</p>
+          <p className="text-sm font-semibold">
+            <T>Examples</T>
+          </p>
           <ExampleRow
             word="WORDY"
             highlightIndex={0}
             highlightColor="bg-chart-2 border-chart-2"
-            explanation="W is in the word and in the correct spot."
+            explanation={t("W is in the word and in the correct spot.")}
           />
           <ExampleRow
             word="LIGHT"
             highlightIndex={1}
             highlightColor="bg-primary border-primary"
-            explanation="I is in the word but in the wrong spot."
+            explanation={t("I is in the word but in the wrong spot.")}
           />
           <ExampleRow
             word="ROGUE"
             highlightIndex={3}
             highlightColor="bg-muted-foreground border-muted-foreground"
-            explanation="U is not in the word in any spot."
+            explanation={t("U is not in the word in any spot.")}
           />
         </div>
       </DialogContent>

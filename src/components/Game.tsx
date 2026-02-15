@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { T, Var, useGT } from "gt-next";
 import { trpc } from "@/lib/trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 import { TileStatus } from "@/types";
@@ -53,7 +54,7 @@ export default function Game({
   const [lostSecret, setLostSecret] = useState("");
   const [showHelp, setShowHelp] = useState(false);
   const [currentRowScope, animateRow] = useAnimate();
-
+  const t = useGT();
   const gameOver =
     currentRow > 0 &&
     (currentRow >= MAX_GUESSES ||
@@ -99,7 +100,7 @@ export default function Game({
       }
     },
     onError() {
-      toast("Not in word list");
+      toast(t("Not in word list"));
       animateRow(currentRowScope.current, {
         x: [0, -4, 4, -4, 4, 0],
         transition: { duration: 0.3 },
@@ -133,7 +134,7 @@ export default function Game({
         if (row.every((l) => l !== "")) {
           submitGuess.mutate({ guess: row });
         } else {
-          toast("Not enough letters");
+          toast(t("Not enough letters"));
           animateRow(currentRowScope.current, {
             x: [0, -4, 4, -4, 4, 0],
             transition: { duration: 0.3 },
@@ -164,10 +165,14 @@ export default function Game({
       <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>You won! 🎉</DialogTitle>
+            <DialogTitle>
+              <T>You won! 🎉</T>
+            </DialogTitle>
             <DialogDescription>
-              You guessed the word in {currentRow}{" "}
-              {currentRow === 1 ? "guess" : "guesses"}.
+              <T>
+                You guessed the word in <Var>{currentRow}</Var>{" "}
+                {currentRow === 1 ? "guess" : "guesses"}.
+              </T>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
@@ -175,10 +180,19 @@ export default function Game({
       <Dialog open={showLossDialog} onOpenChange={setShowLossDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Better luck next time 😢</DialogTitle>
+            <DialogTitle>
+              <T>Better luck next time 😢</T>
+            </DialogTitle>
             <DialogDescription>
-              The word was{" "}
-              <span className="font-bold text-foreground">{lostSecret}</span>.
+              <T>
+                The word was{" "}
+                <Var>
+                  <span className="font-bold text-foreground">
+                    {lostSecret}
+                  </span>
+                </Var>
+                .
+              </T>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
