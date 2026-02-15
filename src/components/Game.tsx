@@ -148,7 +148,10 @@ export default function Game({
 
   return (
     <div className="flex w-full max-w-lg flex-col items-center gap-6">
-      <Header onNewGame={() => newGame.mutate()} onHelp={() => setShowHelp(true)} />
+      <Header
+        onNewGame={() => newGame.mutate()}
+        onHelp={() => setShowHelp(true)}
+      />
       <Board
         key={gameId}
         board={board}
@@ -174,7 +177,8 @@ export default function Game({
           <DialogHeader>
             <DialogTitle>Better luck next time 😢</DialogTitle>
             <DialogDescription>
-              The word was <span className="font-bold text-foreground">{lostSecret}</span>.
+              The word was{" "}
+              <span className="font-bold text-foreground">{lostSecret}</span>.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

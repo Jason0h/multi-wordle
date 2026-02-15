@@ -74,6 +74,10 @@ export const gameRouter = router({
         currentRow === MAX_GUESSES - 1 &&
         !feedback[currentRow].every((s) => s === "correct");
 
-      return { board, feedback, ...(isLoss ? { secret: secret.join("") } : {}) };
+      return {
+        board,
+        feedback,
+        ...(isLoss ? { secret: secret.join("") } : {}),
+      };
     }),
 });
