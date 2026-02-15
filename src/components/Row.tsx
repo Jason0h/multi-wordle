@@ -5,10 +5,12 @@ import { TileStatus } from "@/types";
 export default function Row({
   letters,
   feedback,
+  won = false,
   ref,
 }: {
   letters: string[];
   feedback: TileStatus[];
+  won?: boolean;
   ref?: Ref<HTMLDivElement>;
 }) {
   return (
@@ -19,6 +21,7 @@ export default function Row({
           letter={letter}
           status={feedback[index]}
           index={index}
+          won={won}
         />
       ))}
     </div>

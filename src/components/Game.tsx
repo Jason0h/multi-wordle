@@ -3,9 +3,17 @@
 import { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
 import { useAnimate } from "motion/react";
+import { toast } from "sonner";
 import Header from "./Header";
 import Board from "./Board";
 import Keyboard from "./Keyboard";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 import { TileStatus } from "@/types";
@@ -39,6 +47,7 @@ export default function Game({
     initialFeedback ?? emptyFeedback,
   );
   const [gameId, setGameId] = useState(0);
+  const [showWinDialog, setShowWinDialog] = useState(false);
   const [currentRowScope, animateRow] = useAnimate();
 
   const gameOver =
@@ -55,8 +64,11 @@ export default function Game({
       setKeyboardFeedback(data.feedback);
       setCurrentRow(0);
       setGameId((prev) => prev + 1);
+      setShowWinDialog(false);
     },
   });
+
+  const BOUNCE_DURATION = (WORD_LENGTH - 1) * 100 + 300; // Wave bounce after flip
 
   const submitGuess = trpc.game.submitGuess.useMutation({
     onSuccess(data) {
@@ -66,8 +78,18 @@ export default function Game({
       setTimeout(() => {
         setKeyboardFeedback(data.feedback);
       }, FLIP_DURATION);
+
+      const isWin = data.feedback[currentRow].every(
+        (s: TileStatus) => s === "correct",
+      );
+      if (isWin) {
+        setTimeout(() => {
+          setShowWinDialog(true);
+        }, FLIP_DURATION + BOUNCE_DURATION);
+      }
     },
     onError() {
+      toast("Not in word list");
       animateRow(currentRowScope.current, {
         x: [0, -4, 4, -4, 4, 0],
         transition: { duration: 0.3 },
@@ -101,6 +123,7 @@ export default function Game({
         if (row.every((l) => l !== "")) {
           submitGuess.mutate({ guess: row });
         } else {
+          toast("Not enough letters");
           animateRow(currentRowScope.current, {
             x: [0, -4, 4, -4, 4, 0],
             transition: { duration: 0.3 },
@@ -124,6 +147,17 @@ export default function Game({
         currentRowRef={currentRowScope}
       />
       <Keyboard board={board} feedback={keyboardFeedback} />
+      <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>You won!</DialogTitle>
+            <DialogDescription>
+              You guessed the word in {currentRow}{" "}
+              {currentRow === 1 ? "guess" : "guesses"}.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -9,7 +9,8 @@ const ROWS = [
 const KEY_COLORS: Record<Exclude<TileStatus, "idle">, string> = {
   correct: "bg-chart-2 text-white dark:text-black border-chart-2",
   present: "bg-primary text-white dark:text-black border-primary",
-  absent: "bg-muted-foreground text-white dark:text-black border-muted-foreground",
+  absent:
+    "bg-muted-foreground text-white dark:text-black border-muted-foreground",
 };
 
 const STATUS_PRIORITY: Record<TileStatus, number> = {

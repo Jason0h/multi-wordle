@@ -1,9 +1,4 @@
-const DICTIONARY = new Set([
-  "APPLE",
-  "CREAM",
-  "HAPPY",
-  "MAPLE",
-]);
+const DICTIONARY = new Set(["APPLE", "CREAM", "HAPPY", "MAPLE"]);
 
 export function getRandomWord(): string[] {
   const words = [...DICTIONARY];

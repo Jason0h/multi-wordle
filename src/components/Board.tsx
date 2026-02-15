@@ -21,6 +21,7 @@ export default function Board({
           ref={index === currentRow ? currentRowRef : undefined}
           letters={row}
           feedback={feedback[index]}
+          won={feedback[index].every((s) => s === "correct")}
         />
       ))}
     </div>

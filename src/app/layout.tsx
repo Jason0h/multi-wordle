@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import TRPCProvider from "@/components/TRPCProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TRPCProvider>{children}</TRPCProvider>
+          <Toaster position="top-center" />
         </ThemeProvider>
       </body>
     </html>
