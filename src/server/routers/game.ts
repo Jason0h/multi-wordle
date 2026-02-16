@@ -42,31 +42,37 @@ export const gameRouter = router({
         throw new Error("No guesses remaining");
       }
 
-      if (!isValidWord(input.guess, gameLocale)) {
+      const isRtl = gameLocale === "he";
+      const guess = isRtl ? [...input.guess].reverse() : input.guess;
+
+      if (!isValidWord(guess, gameLocale)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Not in word list",
         });
       }
 
-      board[currentRow] = input.guess;
-
+      const rowFeedback: TileStatus[] = Array(WORD_LENGTH).fill("idle");
       const secretBank = [...secret];
-      for (let i = 0; i < board[currentRow].length; i++) {
-        if (board[currentRow][i] === secret[i]) {
+      for (let i = 0; i < guess.length; i++) {
+        if (guess[i] === secret[i]) {
           secretBank[i] = "";
-          feedback[currentRow][i] = "correct";
+          rowFeedback[i] = "correct";
         }
       }
-      for (let i = 0; i < board[currentRow].length; i++) {
-        if (feedback[currentRow][i] === "correct") continue;
-        if (secretBank.includes(board[currentRow][i])) {
-          feedback[currentRow][i] = "present";
-          secretBank[secretBank.indexOf(board[currentRow][i])] = "";
+      for (let i = 0; i < guess.length; i++) {
+        if (rowFeedback[i] === "correct") continue;
+        if (secretBank.includes(guess[i])) {
+          rowFeedback[i] = "present";
+          secretBank[secretBank.indexOf(guess[i])] = "";
         } else {
-          feedback[currentRow][i] = "absent";
+          rowFeedback[i] = "absent";
         }
       }
+
+      // Store in display order (reverse back for RTL)
+      board[currentRow] = input.guess;
+      feedback[currentRow] = isRtl ? rowFeedback.reverse() : rowFeedback;
 
       ctx.session.board = board;
       ctx.session.feedback = feedback;

@@ -111,62 +111,61 @@ export default function Game({
     },
   });
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (gameOver) return;
+  const handleInput = (key: string) => {
+    if (gameOver) return;
 
-      const key = e.key;
-
-      const INPUT_PATTERNS: Record<string, RegExp> = {
-        en: /^[a-zA-Z]$/,
-        ru: /^[а-яёА-ЯЁ]$/,
-        he: /^[\u05D0-\u05EA]$/,
-      };
-      const pattern = INPUT_PATTERNS[locale] ?? INPUT_PATTERNS.en;
-
-      if (pattern.test(key)) {
-        setBoard((draft) => {
-          if (isRtl) {
-            const lastEmpty = draft[currentRow].findLastIndex((l) => l === "");
-            if (lastEmpty !== -1) {
-              draft[currentRow][lastEmpty] = key.toUpperCase();
-            }
-          } else {
-            const nextEmpty = draft[currentRow].indexOf("");
-            if (nextEmpty !== -1) {
-              draft[currentRow][nextEmpty] = key.toUpperCase();
-            }
-          }
-        });
-      } else if (key === "Backspace") {
-        setBoard((draft) => {
-          const row = draft[currentRow];
-          if (isRtl) {
-            const firstFilled = row.findIndex((l) => l !== "");
-            if (firstFilled !== -1) {
-              row[firstFilled] = "";
-            }
-          } else {
-            const lastFilled = row.findLastIndex((l) => l !== "");
-            if (lastFilled !== -1) {
-              row[lastFilled] = "";
-            }
-          }
-        });
-      } else if (key === "Enter") {
-        const row = board[currentRow];
-        if (row.every((l) => l !== "")) {
-          submitGuess.mutate({ guess: row });
-        } else {
-          toast(t("Not enough letters"));
-          animateRow(currentRowScope.current, {
-            x: [0, -4, 4, -4, 4, 0],
-            transition: { duration: 0.3 },
-          });
-        }
-      }
+    const INPUT_PATTERNS: Record<string, RegExp> = {
+      en: /^[a-zA-Z]$/,
+      ru: /^[а-яёА-ЯЁ]$/,
+      he: /^[\u05D0-\u05EA]$/,
     };
+    const pattern = INPUT_PATTERNS[locale] ?? INPUT_PATTERNS.en;
 
+    if (pattern.test(key)) {
+      setBoard((draft) => {
+        if (isRtl) {
+          const lastEmpty = draft[currentRow].findLastIndex((l) => l === "");
+          if (lastEmpty !== -1) {
+            draft[currentRow][lastEmpty] = key.toUpperCase();
+          }
+        } else {
+          const nextEmpty = draft[currentRow].indexOf("");
+          if (nextEmpty !== -1) {
+            draft[currentRow][nextEmpty] = key.toUpperCase();
+          }
+        }
+      });
+    } else if (key === "Backspace") {
+      setBoard((draft) => {
+        const row = draft[currentRow];
+        if (isRtl) {
+          const firstFilled = row.findIndex((l) => l !== "");
+          if (firstFilled !== -1) {
+            row[firstFilled] = "";
+          }
+        } else {
+          const lastFilled = row.findLastIndex((l) => l !== "");
+          if (lastFilled !== -1) {
+            row[lastFilled] = "";
+          }
+        }
+      });
+    } else if (key === "Enter") {
+      const row = board[currentRow];
+      if (row.every((l) => l !== "")) {
+        submitGuess.mutate({ guess: row });
+      } else {
+        toast(t("Not enough letters"));
+        animateRow(currentRowScope.current, {
+          x: [0, -4, 4, -4, 4, 0],
+          transition: { duration: 0.3 },
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => handleInput(e.key);
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   });
@@ -185,7 +184,7 @@ export default function Game({
         currentRowRef={currentRowScope}
         rtl={isRtl}
       />
-      <Keyboard board={board} feedback={keyboardFeedback} locale={locale} />
+      <Keyboard board={board} feedback={keyboardFeedback} locale={locale} onKeyPress={handleInput} />
       <HelpDialog open={showHelp} onOpenChange={setShowHelp} />
       <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
         <DialogContent>

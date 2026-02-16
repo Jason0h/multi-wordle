@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "motion/react";
 import { TileStatus } from "@/types";
 
 const KEYBOARD_LAYOUTS: Record<string, string[][]> = {
@@ -55,10 +58,12 @@ export default function Keyboard({
   board,
   feedback,
   locale = "en",
+  onKeyPress,
 }: {
   board: string[][];
   feedback: TileStatus[][];
   locale?: string;
+  onKeyPress: (key: string) => void;
 }) {
   const keyStatuses = deriveKeyStatuses(board, feedback);
   const rows = KEYBOARD_LAYOUTS[locale] ?? KEYBOARD_LAYOUTS.en;
@@ -75,14 +80,18 @@ export default function Keyboard({
                 ? KEY_COLORS[status]
                 : "bg-background border-border";
             return (
-              <div
+              <motion.button
                 key={key}
-                className={`flex h-14 items-center justify-center rounded border-2 text-base font-bold ${
+                onClick={(e) => { onKeyPress(key); e.currentTarget.blur(); }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.1 }}
+                style={{ WebkitTapHighlightColor: "transparent" }}
+                className={`flex h-14 select-none items-center justify-center rounded border-2 text-base font-bold outline-none ${
                   isWide ? "min-w-9 flex-1" : "w-11"
                 } ${colorClasses}`}
               >
                 {key}
-              </div>
+              </motion.button>
             );
           })}
         </div>
