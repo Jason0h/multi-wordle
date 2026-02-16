@@ -5,6 +5,7 @@ export interface GameSession {
   secret?: string[];
   board?: string[][];
   feedback?: TileStatus[][];
+  locale?: string;
 }
 
 export const sessionOptions: SessionOptions = {

@@ -16,6 +16,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { T, Var, useGT } from "gt-next";
+import { useLocale } from "gt-next/client";
 import { trpc } from "@/lib/trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 import { TileStatus } from "@/types";
@@ -55,6 +56,8 @@ export default function Game({
   const [showHelp, setShowHelp] = useState(false);
   const [currentRowScope, animateRow] = useAnimate();
   const t = useGT();
+  const locale = useLocale();
+  const isRtl = locale === "he";
   const gameOver =
     currentRow > 0 &&
     (currentRow >= MAX_GUESSES ||
@@ -114,19 +117,40 @@ export default function Game({
 
       const key = e.key;
 
-      if (/^[a-zA-Z]$/.test(key)) {
+      const INPUT_PATTERNS: Record<string, RegExp> = {
+        en: /^[a-zA-Z]$/,
+        ru: /^[а-яёА-ЯЁ]$/,
+        he: /^[\u05D0-\u05EA]$/,
+      };
+      const pattern = INPUT_PATTERNS[locale] ?? INPUT_PATTERNS.en;
+
+      if (pattern.test(key)) {
         setBoard((draft) => {
-          const nextEmpty = draft[currentRow].indexOf("");
-          if (nextEmpty !== -1) {
-            draft[currentRow][nextEmpty] = key.toUpperCase();
+          if (isRtl) {
+            const lastEmpty = draft[currentRow].findLastIndex((l) => l === "");
+            if (lastEmpty !== -1) {
+              draft[currentRow][lastEmpty] = key.toUpperCase();
+            }
+          } else {
+            const nextEmpty = draft[currentRow].indexOf("");
+            if (nextEmpty !== -1) {
+              draft[currentRow][nextEmpty] = key.toUpperCase();
+            }
           }
         });
       } else if (key === "Backspace") {
         setBoard((draft) => {
           const row = draft[currentRow];
-          const lastFilled = row.findLastIndex((l) => l !== "");
-          if (lastFilled !== -1) {
-            row[lastFilled] = "";
+          if (isRtl) {
+            const firstFilled = row.findIndex((l) => l !== "");
+            if (firstFilled !== -1) {
+              row[firstFilled] = "";
+            }
+          } else {
+            const lastFilled = row.findLastIndex((l) => l !== "");
+            if (lastFilled !== -1) {
+              row[lastFilled] = "";
+            }
           }
         });
       } else if (key === "Enter") {
@@ -159,8 +183,9 @@ export default function Game({
         feedback={feedback}
         currentRow={currentRow}
         currentRowRef={currentRowScope}
+        rtl={isRtl}
       />
-      <Keyboard board={board} feedback={keyboardFeedback} />
+      <Keyboard board={board} feedback={keyboardFeedback} locale={locale} />
       <HelpDialog open={showHelp} onOpenChange={setShowHelp} />
       <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
         <DialogContent>

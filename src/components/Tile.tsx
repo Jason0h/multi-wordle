@@ -15,11 +15,13 @@ export default function Tile({
   status = "idle",
   index = 0,
   won = false,
+  rtl = false,
 }: {
   letter: string;
   status?: TileStatus;
   index?: number;
   won?: boolean;
+  rtl?: boolean;
 }) {
   const [scope, animate] = useAnimate();
   const [revealed, setRevealed] = useState(status !== "idle");
@@ -32,7 +34,8 @@ export default function Tile({
 
     let cancelled = false;
     const run = async () => {
-      await new Promise((r) => setTimeout(r, index * 200));
+      const staggerIndex = rtl ? WORD_LENGTH - 1 - index : index;
+      await new Promise((r) => setTimeout(r, staggerIndex * 200));
       if (cancelled) return;
       await animate(scope.current, { rotateX: 90 }, { duration: 0.15 });
       if (cancelled) return;
@@ -40,8 +43,8 @@ export default function Tile({
       await animate(scope.current, { rotateX: 0 }, { duration: 0.15 });
       if (cancelled || !won) return;
       // Wait for all tiles to finish flipping, then stagger the bounce wave
-      const waitForOthers = (WORD_LENGTH - 1 - index) * 0.2;
-      const bounceStagger = index * 0.1;
+      const waitForOthers = (WORD_LENGTH - 1 - staggerIndex) * 0.2;
+      const bounceStagger = staggerIndex * 0.1;
       await animate(
         scope.current,
         { y: [0, -20, 0] },
@@ -52,7 +55,7 @@ export default function Tile({
     return () => {
       cancelled = true;
     };
-  }, [status, index, animate, scope, won]);
+  }, [status, index, animate, scope, won, rtl]);
 
   const colorClasses = revealed && status !== "idle" ? TILE_COLORS[status] : "";
 

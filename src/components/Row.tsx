@@ -6,15 +6,17 @@ export default function Row({
   letters,
   feedback,
   won = false,
+  rtl = false,
   ref,
 }: {
   letters: string[];
   feedback: TileStatus[];
   won?: boolean;
+  rtl?: boolean;
   ref?: Ref<HTMLDivElement>;
 }) {
   return (
-    <div ref={ref} className="flex gap-2">
+    <div ref={ref} dir="ltr" className="flex gap-2">
       {letters.map((letter, index) => (
         <Tile
           key={index}
@@ -22,6 +24,7 @@ export default function Row({
           status={feedback[index]}
           index={index}
           won={won}
+          rtl={rtl}
         />
       ))}
     </div>

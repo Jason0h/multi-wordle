@@ -7,11 +7,13 @@ export default function Board({
   feedback,
   currentRow,
   currentRowRef,
+  rtl = false,
 }: {
   board: string[][];
   feedback: TileStatus[][];
   currentRow: number;
   currentRowRef: RefObject<HTMLDivElement | null>;
+  rtl?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-2">
@@ -22,6 +24,7 @@ export default function Board({
           letters={row}
           feedback={feedback[index]}
           won={feedback[index].every((s) => s === "correct")}
+          rtl={rtl}
         />
       ))}
     </div>

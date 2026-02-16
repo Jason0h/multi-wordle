@@ -4,11 +4,13 @@ import { initTRPC } from "@trpc/server";
 import { GameSession, sessionOptions } from "@/lib/session";
 
 export async function createContext() {
+  const cookieStore = await cookies();
   const session = await getIronSession<GameSession>(
-    await cookies(),
+    cookieStore,
     sessionOptions,
   );
-  return { session };
+  const locale = cookieStore.get("generaltranslation.locale")?.value ?? "en";
+  return { session, locale };
 }
 
 export type Context = Awaited<ReturnType<typeof createContext>>;

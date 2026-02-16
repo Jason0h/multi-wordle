@@ -1,6 +1,7 @@
 "use client";
 
 import { T, useGT } from "gt-next";
+import { useLocale } from "gt-next/client";
 import {
   Dialog,
   DialogContent,
@@ -21,24 +22,53 @@ function ExampleRow({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex gap-1">
-        {word.split("").map((letter, i) => (
-          <div
-            key={i}
-            className={`flex h-10 w-10 items-center justify-center border-2 text-lg font-bold uppercase ${
-              i === highlightIndex
-                ? `${highlightColor} text-white dark:text-black`
-                : "border-border"
-            }`}
-          >
-            {letter}
-          </div>
-        ))}
+      <div className="flex">
+        <div dir="ltr" className="flex gap-1">
+          {word.split("").map((letter, i) => (
+            <div
+              key={i}
+              className={`flex h-10 w-10 items-center justify-center border-2 text-lg font-bold uppercase ${
+                i === highlightIndex
+                  ? `${highlightColor} text-white dark:text-black`
+                  : "border-border"
+              }`}
+            >
+              {letter}
+            </div>
+          ))}
+        </div>
       </div>
       <p className="text-sm text-muted-foreground">{explanation}</p>
     </div>
   );
 }
+
+const EXAMPLES: Record<
+  string,
+  { word: string; index: number; letter: string }[]
+> = {
+  en: [
+    { word: "WORDY", index: 0, letter: "W" },
+    { word: "LIGHT", index: 1, letter: "I" },
+    { word: "ROGUE", index: 3, letter: "U" },
+  ],
+  ru: [
+    { word: "СЛОВО", index: 0, letter: "С" },
+    { word: "КНИГА", index: 1, letter: "Н" },
+    { word: "ДОМИК", index: 3, letter: "И" },
+  ],
+  he: [
+    { word: "אנשים", index: 0, letter: "א" },
+    { word: "דברים", index: 1, letter: "ב" },
+    { word: "קדימה", index: 3, letter: "מ" },
+  ],
+};
+
+const HIGHLIGHT_COLORS = [
+  "bg-chart-2 border-chart-2",
+  "bg-primary border-primary",
+  "bg-muted-foreground border-muted-foreground",
+];
 
 export default function HelpDialog({
   open,
@@ -48,6 +78,8 @@ export default function HelpDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const t = useGT();
+  const locale = useLocale();
+  const examples = EXAMPLES[locale] ?? EXAMPLES.en;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -60,7 +92,7 @@ export default function HelpDialog({
         <p className="font-medium">
           <T>Guess the Wordle in 6 tries.</T>
         </p>
-        <ul className="list-disc space-y-1 pl-5 text-sm">
+        <ul className="list-disc space-y-1 ps-5 text-sm">
           <li>
             <T>Each guess must be a valid 5-letter word.</T>
           </li>
@@ -76,22 +108,28 @@ export default function HelpDialog({
             <T>Examples</T>
           </p>
           <ExampleRow
-            word="WORDY"
-            highlightIndex={0}
-            highlightColor="bg-chart-2 border-chart-2"
-            explanation={t("W is in the word and in the correct spot.")}
+            word={examples[0].word}
+            highlightIndex={examples[0].index}
+            highlightColor={HIGHLIGHT_COLORS[0]}
+            explanation={t("{letter} is in the word and in the correct spot.", {
+              letter: examples[0].letter,
+            })}
           />
           <ExampleRow
-            word="LIGHT"
-            highlightIndex={1}
-            highlightColor="bg-primary border-primary"
-            explanation={t("I is in the word but in the wrong spot.")}
+            word={examples[1].word}
+            highlightIndex={examples[1].index}
+            highlightColor={HIGHLIGHT_COLORS[1]}
+            explanation={t("{letter} is in the word but in the wrong spot.", {
+              letter: examples[1].letter,
+            })}
           />
           <ExampleRow
-            word="ROGUE"
-            highlightIndex={3}
-            highlightColor="bg-muted-foreground border-muted-foreground"
-            explanation={t("U is not in the word in any spot.")}
+            word={examples[2].word}
+            highlightIndex={examples[2].index}
+            highlightColor={HIGHLIGHT_COLORS[2]}
+            explanation={t("{letter} is not in the word in any spot.", {
+              letter: examples[2].letter,
+            })}
           />
         </div>
       </DialogContent>

@@ -1,10 +1,22 @@
 import { TileStatus } from "@/types";
 
-const ROWS = [
-  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-  ["Z", "X", "C", "V", "B", "N", "M"],
-];
+const KEYBOARD_LAYOUTS: Record<string, string[][]> = {
+  en: [
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    ["Z", "X", "C", "V", "B", "N", "M"],
+  ],
+  ru: [
+    ["Й", "Ц", "У", "К", "Е", "Н", "Г", "Ш", "Щ", "З", "Х", "Ъ"],
+    ["Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э"],
+    ["Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю"],
+  ],
+  he: [
+    ["ק", "ר", "א", "ט", "ו", "ן", "ם", "פ"],
+    ["ש", "ד", "ג", "כ", "ע", "י", "ח", "ל", "ך", "ף"],
+    ["ז", "ס", "ב", "ה", "נ", "מ", "צ", "ת", "ץ"],
+  ],
+};
 
 const KEY_COLORS: Record<Exclude<TileStatus, "idle">, string> = {
   correct: "bg-chart-2 text-white dark:text-black border-chart-2",
@@ -42,15 +54,19 @@ function deriveKeyStatuses(
 export default function Keyboard({
   board,
   feedback,
+  locale = "en",
 }: {
   board: string[][];
   feedback: TileStatus[][];
+  locale?: string;
 }) {
   const keyStatuses = deriveKeyStatuses(board, feedback);
+  const rows = KEYBOARD_LAYOUTS[locale] ?? KEYBOARD_LAYOUTS.en;
+  const isWide = locale === "ru";
 
   return (
-    <div className="flex flex-col items-center gap-1.5">
-      {ROWS.map((row, i) => (
+    <div dir="ltr" className="flex flex-col items-center gap-1.5">
+      {rows.map((row, i) => (
         <div key={i} className="flex gap-1.5">
           {row.map((key) => {
             const status = keyStatuses[key];
@@ -61,7 +77,9 @@ export default function Keyboard({
             return (
               <div
                 key={key}
-                className={`flex h-14 w-11 items-center justify-center rounded border-2 text-base font-bold ${colorClasses}`}
+                className={`flex h-14 items-center justify-center rounded border-2 text-base font-bold ${
+                  isWide ? "min-w-9 flex-1" : "w-11"
+                } ${colorClasses}`}
               >
                 {key}
               </div>

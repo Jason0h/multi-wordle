@@ -1,6 +1,7 @@
 "use client";
 
 import { CircleHelp, RotateCcw } from "lucide-react";
+import { T } from "gt-next";
 import ThemeToggle from "./ThemeToggle";
 import LocaleSwitcher from "./LocaleSwitcher";
 
@@ -13,7 +14,9 @@ export default function Header({
 }) {
   return (
     <div className="flex w-full items-center justify-between">
-      <h1 className="text-xl font-bold tracking-wide">MULTI WORDLE</h1>
+      <h1 className="text-xl font-bold tracking-wide">
+        <T>MULTI WORDLE</T>
+      </h1>
       <div className="flex items-center gap-2">
         <button
           onClick={(e) => {

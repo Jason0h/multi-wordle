@@ -19,6 +19,7 @@ export const gameRouter = router({
     ctx.session.board = board;
     ctx.session.feedback = feedback;
     ctx.session.secret = undefined;
+    ctx.session.locale = undefined;
     await ctx.session.save();
     return { board, feedback };
   }),
@@ -26,7 +27,8 @@ export const gameRouter = router({
   submitGuess: publicProcedure
     .input(z.object({ guess: z.array(z.string()).length(WORD_LENGTH) }))
     .mutation(async ({ ctx, input }) => {
-      const secret: string[] = ctx.session.secret ?? getRandomWord();
+      const gameLocale = ctx.session.locale ?? ctx.locale;
+      const secret: string[] = ctx.session.secret ?? getRandomWord(gameLocale);
       console.log("Secret:", secret.join(""));
       const board: string[][] =
         ctx.session.board ??
@@ -40,7 +42,7 @@ export const gameRouter = router({
         throw new Error("No guesses remaining");
       }
 
-      if (!isValidWord(input.guess)) {
+      if (!isValidWord(input.guess, gameLocale)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Not in word list",
@@ -69,6 +71,7 @@ export const gameRouter = router({
       ctx.session.board = board;
       ctx.session.feedback = feedback;
       ctx.session.secret = secret;
+      ctx.session.locale = gameLocale;
       await ctx.session.save();
 
       const isLoss =

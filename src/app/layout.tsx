@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GTProvider } from "gt-next";
+import { getLocale } from "gt-next/server";
 import { ThemeProvider } from "next-themes";
 import TRPCProvider from "@/components/TRPCProvider";
 import { Toaster } from "@/components/ui/sonner";
@@ -11,13 +12,16 @@ export const metadata: Metadata = {
   description: "A Multilingual Wordle game",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const dir = locale === "he" ? "rtl" : "ltr";
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} dir={dir} suppressHydrationWarning>
       <body className="antialiased">
         <GTProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
