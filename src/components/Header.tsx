@@ -2,6 +2,7 @@
 
 import { CircleHelp, RotateCcw } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 export default function Header({
   onNewGame,
@@ -34,6 +35,7 @@ export default function Header({
           <RotateCcw className="h-4 w-4" />
           <span className="sr-only">New game</span>
         </button>
+        <LocaleSwitcher />
         <ThemeToggle />
       </div>
     </div>
