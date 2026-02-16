@@ -27,6 +27,7 @@ export const gameRouter = router({
     .input(z.object({ guess: z.array(z.string()).length(WORD_LENGTH) }))
     .mutation(async ({ ctx, input }) => {
       const secret: string[] = ctx.session.secret ?? getRandomWord();
+      console.log("Secret:", secret.join(""));
       const board: string[][] =
         ctx.session.board ??
         Array.from({ length: MAX_GUESSES }, () =>
