@@ -169,10 +169,15 @@ export default function Game({
               <T>You won! 🎉</T>
             </DialogTitle>
             <DialogDescription>
-              <T>
-                You guessed the word in <Var>{currentRow}</Var>{" "}
-                {currentRow === 1 ? "guess" : "guesses"}.
-              </T>
+              {currentRow === 1 ? (
+                <T>
+                  You guessed the word in <Var>{currentRow}</Var> guess.
+                </T>
+              ) : (
+                <T>
+                  You guessed the word in <Var>{currentRow}</Var> guesses.
+                </T>
+              )}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
