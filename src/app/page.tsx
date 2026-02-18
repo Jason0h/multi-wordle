@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
-import { GameSession, sessionOptions } from "@/lib/session";
+import { GameSession, GameSessionSchema, sessionOptions } from "@/lib/session";
 import Game from "@/components/Game";
 
 export default async function Home() {
@@ -9,11 +9,14 @@ export default async function Home() {
     sessionOptions,
   );
 
+  const parsed = GameSessionSchema.safeParse(session);
+  const validSession = parsed.success ? parsed.data : {};
+
   return (
     <div className="flex min-h-screen items-center justify-center">
       <Game
-        initialBoard={session.board ?? null}
-        initialFeedback={session.feedback ?? null}
+        initialBoard={validSession.board}
+        initialFeedback={validSession.feedback}
       />
     </div>
   );

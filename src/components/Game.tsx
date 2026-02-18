@@ -20,6 +20,7 @@ import { useLocale } from "gt-next/client";
 import { trpc } from "@/lib/trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 import { TileStatus } from "@/types";
+import { GameSession } from "@/lib/session";
 
 const emptyBoard = () =>
   Array.from({ length: MAX_GUESSES }, () =>
@@ -35,8 +36,8 @@ export default function Game({
   initialBoard,
   initialFeedback,
 }: {
-  initialBoard: string[][] | null;
-  initialFeedback: TileStatus[][] | null;
+  initialBoard: GameSession["board"];
+  initialFeedback: GameSession["feedback"];
 }) {
   const [board, setBoard] = useImmer(initialBoard ?? emptyBoard);
   const [currentRow, setCurrentRow] = useState(() => {
