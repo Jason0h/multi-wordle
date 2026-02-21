@@ -6,10 +6,12 @@
 pnpm install
 ```
 
-Create a `.env.local` file with a session password (must be at least 32 characters):
+Copy `.env.example` to `.env.local` and fill in your values:
 
 ```
-SESSION_PASSWORD=your-secret-key-at-least-32-characters-long
+SESSION_PASSWORD=your-secret-key-at-least-32-characters-long  # openssl rand -base64 32
+GT_PROJECT_ID=prj_...
+GT_API_KEY=gtx-dev-...  # dev key from dash.generaltranslation.com
 ```
 
 ### Running
@@ -30,6 +32,7 @@ If you need to regenerate them (e.g. to change language coverage or answer/valid
 curl -L "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/en/en_full.txt" -o data/raw/en_full.txt
 curl -L "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/ru/ru_full.txt" -o data/raw/ru_full.txt
 curl -L "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/he/he_full.txt" -o data/raw/he_full.txt
+curl -L "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/es/es_full.txt" -o data/raw/es_full.txt
 ```
 
 Then run the extraction script:
@@ -39,6 +42,22 @@ node scripts/extract-words.mjs
 ```
 
 This outputs `data/{lang}-answers.json` (1,000 most frequent words) and `data/{lang}-valid.json` (10,000 most frequent words) for each language.
+
+### Translations
+
+UI strings are managed by [gt-next](https://www.generaltranslation.com). The compiled translation files (`public/_gt/*.json`) are committed to the repo, so **no translation step is needed for normal development**.
+
+If you add or change translatable strings (`<T>`, `useGT()`), regenerate the translation files:
+
+```bash
+npx gtx-cli translate   # uses GT_API_KEY + GT_PROJECT_ID from .env.local
+```
+
+**For production deploys**, use a production key (`gtx-api-...`) in your CI/CD environment. The build script already runs `gtx-cli translate` before `next build`:
+
+```json
+"build": "npx gtx-cli translate && next build"
+```
 
 ### Dev utilities
 
