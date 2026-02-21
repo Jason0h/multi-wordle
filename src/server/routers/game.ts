@@ -52,7 +52,7 @@ export const gameRouter = router({
         });
       }
 
-      const rowFeedback: TileStatus[] = Array(WORD_LENGTH).fill("idle");
+      const rowFeedback: TileStatus[] = Array<TileStatus>(WORD_LENGTH).fill("idle");
       const secretBank = [...secret];
       for (let i = 0; i < guess.length; i++) {
         if (guess[i] === secret[i]) {
