@@ -62,6 +62,11 @@ const EXAMPLES: Record<
     { word: "דברים", index: 1, letter: "ב" },
     { word: "קדימה", index: 3, letter: "מ" },
   ],
+  es: [
+    { word: "PLAZA", index: 0, letter: "P" },
+    { word: "TIGRE", index: 1, letter: "I" },
+    { word: "NOCHE", index: 3, letter: "H" },
+  ],
 };
 
 const HIGHLIGHT_COLORS = [

@@ -4,7 +4,7 @@ import { useLocale } from "gt-next/client";
 import { switchLocale } from "@/actions/switchLocale";
 import { useTransition } from "react";
 
-const LOCALES = ["en", "ru", "he"] as const;
+const LOCALES = ["en", "ru", "he", "es"] as const;
 
 export default function LocaleSwitcher() {
   const locale = useLocale();

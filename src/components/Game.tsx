@@ -119,6 +119,7 @@ export default function Game({
       en: /^[a-zA-Z]$/,
       ru: /^[а-яёА-ЯЁ]$/,
       he: /^[\u05D0-\u05EA]$/,
+      es: /^[a-zA-ZÑñ]$/,
     };
     const pattern = INPUT_PATTERNS[locale] ?? INPUT_PATTERNS.en;
 
@@ -185,7 +186,12 @@ export default function Game({
         currentRowRef={currentRowScope}
         rtl={isRtl}
       />
-      <Keyboard board={board} feedback={keyboardFeedback} locale={locale} onKeyPress={handleInput} />
+      <Keyboard
+        board={board}
+        feedback={keyboardFeedback}
+        locale={locale}
+        onKeyPress={handleInput}
+      />
       <HelpDialog open={showHelp} onOpenChange={setShowHelp} />
       <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
         <DialogContent>

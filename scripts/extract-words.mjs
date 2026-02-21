@@ -24,6 +24,12 @@ const LANGUAGES = [
     // Base Hebrew letters only (\u05D0–\u05EA), no nikud/diacritics
     regex: /^[\u05D0-\u05EA]{5}$/,
   },
+  {
+    code: "es",
+    input: "data/raw/es_full.txt",
+    // 5-letter Spanish words: base Latin + accented vowels + ñ
+    regex: /^[a-záéíóúñ]{5}$/,
+  },
 ];
 
 const ANSWERS_SIZE = 1000;

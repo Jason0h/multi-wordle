@@ -4,6 +4,7 @@ import { router, publicProcedure } from "../trpc";
 import { WORD_LENGTH, MAX_GUESSES } from "@/lib/constants";
 import { TileStatus } from "@/types";
 import { getRandomWord, isValidWord } from "@/lib/words";
+import { stripAccents } from "@/lib/normalize";
 
 const emptyFeedback = (): TileStatus[][] =>
   Array.from({ length: MAX_GUESSES }, () =>
@@ -52,26 +53,31 @@ export const gameRouter = router({
         });
       }
 
-      const rowFeedback: TileStatus[] = Array<TileStatus>(WORD_LENGTH).fill("idle");
+      const rowFeedback: TileStatus[] =
+        Array<TileStatus>(WORD_LENGTH).fill("idle");
       const secretBank = [...secret];
+      const isAccented = gameLocale === "es";
+      const norm = (s: string) => (isAccented ? stripAccents(s) : s);
+
       for (let i = 0; i < guess.length; i++) {
-        if (guess[i] === secret[i]) {
+        if (norm(guess[i]) === norm(secret[i])) {
           secretBank[i] = "";
           rowFeedback[i] = "correct";
         }
       }
       for (let i = 0; i < guess.length; i++) {
         if (rowFeedback[i] === "correct") continue;
-        if (secretBank.includes(guess[i])) {
+        const bankIdx = secretBank.findIndex((s) => norm(s) === norm(guess[i]));
+        if (bankIdx !== -1) {
           rowFeedback[i] = "present";
-          secretBank[secretBank.indexOf(guess[i])] = "";
+          secretBank[bankIdx] = "";
         } else {
           rowFeedback[i] = "absent";
         }
       }
 
       // Store in display order (reverse back for RTL)
-      board[currentRow] = input.guess;
+      board[currentRow] = isRtl ? input.guess : guess;
       feedback[currentRow] = isRtl ? rowFeedback.reverse() : rowFeedback;
 
       ctx.session.board = board;

@@ -1,0 +1,38 @@
+{
+  "0044e432ec9167a7": "Mejor suerte la próxima vez 😢",
+  "1122f400527ace01": "Cómo jugar",
+  "4c32ab7037bd431b": "Adivina el Wordle en 6 intentos.",
+  "4cfe323011a72fac": "¡Ganaste! 🎉",
+  "61cc34d78577237b": [
+    "Adivinaste la palabra en ",
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    " ",
+    {
+      "i": 2,
+      "k": "_gt_value_2",
+      "v": "v"
+    },
+    "."
+  ],
+  "6742f0c2cc165b17": "No está en la lista de palabras",
+  "680b347b7326d4db": "Ejemplos",
+  "8259e105fdc3c600": "I está en la palabra pero en el lugar incorrecto.",
+  "89a639ad9a608ca0": "El color de las casillas cambiará para mostrar qué tan cerca estuvo tu intento de la palabra.",
+  "a46d90772aa7f5e7": "U no está en la palabra en ningún lugar.",
+  "c6929fea6441c999": "No hay suficientes letras",
+  "cea96cbd301eccc8": [
+    "La palabra era ",
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    "."
+  ],
+  "ec644d69ec4a6b08": "W está en la palabra y en el lugar correcto.",
+  "f07da1a38f075a8b": "Cada intento debe ser una palabra válida de 5 letras."
+}

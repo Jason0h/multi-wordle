@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { TileStatus } from "@/types";
+import { stripAccents } from "@/lib/normalize";
 
 const KEYBOARD_LAYOUTS: Record<string, string[][]> = {
   en: [
@@ -18,6 +19,11 @@ const KEYBOARD_LAYOUTS: Record<string, string[][]> = {
     ["ק", "ר", "א", "ט", "ו", "ן", "ם", "פ"],
     ["ש", "ד", "ג", "כ", "ע", "י", "ח", "ל", "ך", "ף"],
     ["ז", "ס", "ב", "ה", "נ", "מ", "צ", "ת", "ץ"],
+  ],
+  es: [
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ñ"],
+    ["Z", "X", "C", "V", "B", "N", "M"],
   ],
 };
 
@@ -42,7 +48,7 @@ function deriveKeyStatuses(
   const statuses: Record<string, TileStatus> = {};
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[row].length; col++) {
-      const letter = board[row][col];
+      const letter = stripAccents(board[row][col]);
       const status = feedback[row][col];
       if (!letter || status === "idle") continue;
       const current = statuses[letter] ?? "idle";
@@ -82,7 +88,10 @@ export default function Keyboard({
             return (
               <motion.button
                 key={key}
-                onClick={(e) => { onKeyPress(key); e.currentTarget.blur(); }}
+                onClick={(e) => {
+                  onKeyPress(key);
+                  e.currentTarget.blur();
+                }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ duration: 0.1 }}
                 style={{ WebkitTapHighlightColor: "transparent" }}
